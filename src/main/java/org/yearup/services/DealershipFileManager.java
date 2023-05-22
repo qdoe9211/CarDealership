@@ -3,32 +3,42 @@ package org.yearup.services;
 import org.yearup.models.Dealership;
 import org.yearup.models.Vehicle;
 
-import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class DealershipFileManager {
-    private String filepath;
 
-    ArrayList<Dealership> dealerships = new ArrayList<>();
+    private Dealership dealership;
 
-    public DealershipFileManager(String filepath) { this.filepath = filepath; }
+    public DealershipFileManager(Dealership dealership) {
+        this.dealership = dealership;
+    }
 
-    public ArrayList<Dealership> getDealership() throws Exception {
+    public DealershipFileManager() {
 
-        ArrayList<Dealership> vehicles = new ArrayList<>();
+    }
 
-        try (FileReader reader = new FileReader(this.filepath);
+    public Dealership getDealership() {
+
+
+        try (FileReader reader = new FileReader("inventory.csv");
              Scanner scanner = new Scanner(reader)
         ) {
-            scanner.nextLine();
 
-            while(scanner.hasNext()) {
+            String line = scanner.nextLine();
+            String[] columns = line.split("\\|");
+            String name = columns[0];
+            String address = columns[1];
+            String phoneNumber = columns[2];
 
-                String line = scanner.nextLine();
-                String[] columns = line.split("\\|");
+            ArrayList<Vehicle> inventory = new ArrayList<>();
+            while (scanner.hasNext()) {
+
+                line = scanner.nextLine();
+                columns = line.split("\\|");
                 int vin = Integer.parseInt(columns[0]);
                 int year = Integer.parseInt(columns[1]);
                 String make = columns[2];
@@ -38,14 +48,26 @@ public class DealershipFileManager {
                 int odometer = Integer.parseInt(columns[6]);
                 double price = Double.parseDouble(columns[7]);
 
-                Vehicle vehicle = new Vehicle(vin, year, make, model, color, vehicleType, odometer,price);
-                vehicles.add(vehicle);
+                Vehicle vehicle = new Vehicle(vin, year, make, model, color, vehicleType, odometer, price);
+                inventory.add(vehicle);
             }
-        }catch (IOException ex) {}
+
+            dealership = new Dealership(name, address, phoneNumber, inventory);
+        } catch (IOException e) {}
+
+        return dealership;
+    }
+
+    public ArrayList<Vehicle> processGetAllVehiclesRequest() {
+        ArrayList<Vehicle> vehicles = new ArrayList<>();
         return vehicles;
     }
 
+    public void saveDealership(Dealership dealership) throws Exception {
 
+        FileWriter writer = new FileWriter("inventory.csv");
+        writer.write("\n" + dealership.getName() + "|" + dealership.getAddress() + "|" + dealership.getPhoneNumber());
+        writer.close();
 
-    public void saveDealership() {}
+    }
 }

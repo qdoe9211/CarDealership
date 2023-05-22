@@ -1,6 +1,6 @@
 package org.yearup.models;
 
-public class Vehicle extends Dealership {
+public class Vehicle {
 
     private int vin;
     private int year;
@@ -11,14 +11,7 @@ public class Vehicle extends Dealership {
     private int odometer;
     private double price;
 
-    private String name;
-
-    private String address;
-
-    private String phoneNumber;
-
-    public Vehicle(int vin, int year, String make, String model, String vehicleType, String color, int odometer, double price)
-    {
+    public Vehicle(int vin, int year, String make, String model, String vehicleType, String color, int odometer, double price) {
         this.vin = vin;
         this.year = year;
         this.make = make;
@@ -29,11 +22,6 @@ public class Vehicle extends Dealership {
         this.price = price;
     }
 
-    public Dealership(String name, String address, String phoneNumber) {
-        this.name = name;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-    }
 
     public int getVin() { return vin; }
 

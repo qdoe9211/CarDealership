@@ -9,12 +9,14 @@ public class Dealership {
     private String address;
     private String phoneNumber;
 
-    public Dealership(String name, String address, String phoneNumber)
+    private ArrayList<Vehicle> inventory;
+
+    public Dealership(String name, String address, String phoneNumber, ArrayList<Vehicle> inventory)
     {
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.vehicles = new ArrayList<>();
+        this.inventory = inventory;
     }
 
     public String getName() { return name; }
@@ -33,9 +35,35 @@ public class Dealership {
 
     public void addVehicle() {}
 
-    public ArrayList<Vehicle> findVehiclesByPriceRange(double price) { return null; }
+    public ArrayList<Vehicle> findVehiclesByPriceRange(double min, double max) {
 
-    public ArrayList<Vehicle> findVehiclesByMakeModel(String make, String model) { return null; }
+        ArrayList<Vehicle> inventory = new ArrayList<>();
+
+        for(Vehicle vehicle: inventory) {
+
+            if(vehicle.getPrice() >= min && vehicle.getPrice() <= max)
+            {
+                inventory.add(vehicle);
+            }
+        }
+
+        return inventory;
+    }
+
+    public ArrayList<Vehicle> findVehiclesByMakeModel(String make, String model) {
+
+        ArrayList<Vehicle> inventory = new ArrayList<>();
+
+        for(Vehicle vehicle: inventory) {
+
+            if(vehicle.getMake().contains(make) && vehicle.getModel().contains(model)) {
+
+                inventory.add(vehicle);
+            }
+        }
+
+        return inventory;
+    }
 
 }
 

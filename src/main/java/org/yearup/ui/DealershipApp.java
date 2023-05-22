@@ -5,22 +5,24 @@ import org.yearup.models.Vehicle;
 import org.yearup.services.DealershipFileManager;
 
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class DealershipApp {
 
-    private Dealership dealership;
-    private Vehicle vehicle;
-    DealershipFileManager dealershipManager = new DealershipFileManager("data\\inventory.csv");
-    ArrayList<Dealership> dealerships;
-    ArrayList<Dealership> vehicles;
+    Scanner scanner = new Scanner(System.in);
 
+    private DealershipFileManager fileManager;
+    private Dealership dealership;
+    ArrayList<Vehicle> dealerships = new ArrayList<>();
+
+    public DealershipApp(){
+        fileManager = new DealershipFileManager();
+        dealership = fileManager.getDealership();
+    }
 
     public int run() throws Exception{
-        init();
 
         int command;
         Scanner scanner = new Scanner(System.in);
@@ -52,9 +54,6 @@ public class DealershipApp {
             } while (command != 0);
         return command;
     }
-    private void init() throws Exception {
-        dealerships = dealershipManager.getDealership();
-    }
 
     public static int displayHomeScreen() {
 
@@ -73,11 +72,13 @@ public class DealershipApp {
     public ArrayList<Vehicle> processGetAllVehiclesRequest() {
         ArrayList<Vehicle> vehicles = new ArrayList<>();
 
+        System.out.println("All Vehicles");
+        System.out.println("~~~~~~~~~~~~~~~");
         System.out.println("Vin|Year|Make|Model|Color|Vehicle Type|Odometer|Price");
         System.out.println("------------------------------------------------------");
 
 
-        try (FileReader reader = new FileReader("date\\inventory.csv");
+        try (FileReader reader = new FileReader("inventory.csv");
              Scanner scanner = new Scanner(reader)
         ) {
             scanner.nextLine();
@@ -98,16 +99,48 @@ public class DealershipApp {
                 Vehicle vehicle = new Vehicle(vin, year, make, model, color, vehicleType, odometer,price);
                 vehicles.add(vehicle);
             }
-        }catch (IOException ex) {}
+        }catch (IOException ex) {
+            ex.printStackTrace();
+        }
         return vehicles;
     }
 
     public void processGetByPriceRequest() {
+        Scanner scanner = new Scanner(System.in);
 
+        System.out.println();
+        System.out.println("Find Vehicles By Price");
+        System.out.println("------------------------");
+        System.out.println("Enter the minimum price: ");
+        double minPrice = scanner.nextDouble();
+        System.out.println("Enter the maximum price: ");
+        double maxPrice = scanner.nextDouble();
 
+        for (Vehicle vehicle: dealerships) {
+            double price = vehicle.getPrice();
+            if (price >= minPrice && price <= maxPrice) {
+                System.out.println(vehicle.getPrice());
+            }
+        }
     }
 
-    public void processGetByMakeModelRequest() {}
+    public void processGetByMakeModelRequest() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println();
+        System.out.println("Find Vehicles By Make/Model");
+        System.out.println("-----------------------------");
+        System.out.println("Enter the Make of the vehicle: ");
+        String make = scanner.nextLine();
+        System.out.println("Enter the Model of the vehicle: ");
+        String model = scanner.nextLine();
+
+        for (Vehicle vehicle: dealerships) {
+            if (vehicle.getMake().equalsIgnoreCase(make) && vehicle.getModel().equalsIgnoreCase(model)) {
+                System.out.println(vehicle.getMake() + " " + vehicle.getModel());
+            }
+        }
+    }
 
     public void processAddVehicleRequest() {
         Scanner scanner = new Scanner(System.in);
@@ -132,13 +165,12 @@ public class DealershipApp {
         System.out.println("Enter the price of the vehicle: ");
         double price = scanner.nextDouble();
 
-        Dealership vehicles = new Dealership(vin, year, make, model, color, vehicleType, odometer, price);
-        dealerships.add(vehicles);
+        Vehicle vehicle = new Vehicle(vin, year, make, model, vehicleType, color, odometer, price);
+        dealerships.add(vehicle);
 
-        FileWriter writer = new FileWriter("data\\inventory.csv");
-        writer.write("\n" + )
+        System.out.println();
+        System.out.println("Vehicle has been added: \n" + vehicle.getVin() + "|" + vehicle.getYear() + "|" + vehicle.getMake() + "|" + vehicle.getModel() + "|" + vehicle.getColor() + "|" + vehicle.getVehicleType() + "|" + vehicle.getOdometer() + "|" + vehicle.getPrice());
+
     }
-
-
 
 }
